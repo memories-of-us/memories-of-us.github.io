@@ -19,10 +19,22 @@ try {
         throw new Exception("Connection failed: " . $conn->connect_error);
     }
 
-    // Create database if it doesn't exist
-    $sql = "CREATE DATABASE IF NOT EXISTS $dbname";
-    if (!$conn->query($sql)) {
-        throw new Exception("Error creating database: " . $conn->error);
+    // Read and execute the SQL file
+    $sql = file_get_contents('database.sql');
+    if ($sql === false) {
+        throw new Exception("Could not read database.sql file");
+    }
+
+    // Split the SQL file into individual statements
+    $statements = array_filter(array_map('trim', explode(';', $sql)));
+
+    // Execute each statement
+    foreach ($statements as $statement) {
+        if (!empty($statement)) {
+            if (!$conn->query($statement)) {
+                throw new Exception("Error executing SQL: " . $conn->error);
+            }
+        }
     }
 
     // Close the connection
