@@ -1,7 +1,7 @@
 <?php
 // Database configuration
 $servername = "localhost";
-$username = "root";
+$username = "mysql";
 $password = "";
 $dbname = "todolist";
 
